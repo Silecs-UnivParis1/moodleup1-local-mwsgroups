@@ -13,7 +13,6 @@
 define('MWS_SEARCH_MAXROWS', 100);
 
 require __DIR__ . '/lib_users.php';
-require_once($CFG->dirroot . '/local/cohortsyncup1/libwsgroups.php');
 
 class mws_search_groups
 {
@@ -91,6 +90,7 @@ class mws_search_groups
      *
      * @param string $up1code ex. "0934B05,0938B05"
      * @return array groups
+     * @uses \local_cohortsyncup1\fetch_wsgroups
      */
     static public function search_related_groups($up1code) {
         $groups = array();
@@ -98,7 +98,8 @@ class mws_search_groups
         foreach (explode(',', $up1code) as $code) {
             $cohortkeys[] = 'groups-mati' . $code;
         }
-        $groups = get_related_cohorts($cohortkeys);
+        $fetch = new \local_cohortsyncup1\fetch_wsgroups(0);
+        $groups = $fetch->get_related_cohorts($cohortkeys);
         return $groups;
     }
 
