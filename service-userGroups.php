@@ -4,17 +4,21 @@ define('NO_OUTPUT_BUFFERING', true);
 require('../../config.php');
 require_once('./lib.php');
 
-$uid = required_param('uid', PARAM_RAW);
-$callback = optional_param('callback', '', PARAM_ALPHANUMEXT); // if set, use jsonp instead of json
+global $USER;
 
-$PAGE->set_context(context_system::instance());
+if (isloggedin() && !isguestuser() && (user_has_role_assignment($USER->id,3) || user_has_role_assignment($USER->id,4) || is_siteadmin())) {
+    $uid = required_param('uid', PARAM_RAW);
+    $callback = optional_param('callback', '', PARAM_ALPHANUMEXT); // if set, use jsonp instead of json
 
-$res = mws_userGroupsId($uid);
+    $PAGE->set_context(context_system::instance());
 
-if (empty($callback)) {
-    header('Content-Type: application/json; charset="UTF-8"');
-    echo json_encode($res);
-} else {
-    header('Content-Type: application/javascript; charset="UTF-8"');
-    echo $callback . '(' . json_encode($res) . ');';
+    $res = mws_userGroupsId($uid);
+
+    if (empty($callback)) {
+        header('Content-Type: application/json; charset="UTF-8"');
+        echo json_encode($res);
+    } else {
+        header('Content-Type: application/javascript; charset="UTF-8"');
+        echo $callback . '(' . json_encode($res) . ');';
+    }
 }
