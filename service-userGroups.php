@@ -3,10 +3,11 @@
 define('NO_OUTPUT_BUFFERING', true);
 require('../../config.php');
 require_once('./lib.php');
+require_once('./libaccess.php');
 
 global $USER;
 
-if (isloggedin() && !isguestuser() && (user_has_role_assignment($USER->id,3) || user_has_role_assignment($USER->id,4) || is_siteadmin())) {
+if (mwsgroups_require_permission($USER->id)) {
     $uid = required_param('uid', PARAM_RAW);
     $callback = optional_param('callback', '', PARAM_ALPHANUMEXT); // if set, use jsonp instead of json
 

@@ -3,10 +3,10 @@
 define('NO_OUTPUT_BUFFERING', true);
 require('../../config.php');
 require_once(__DIR__ . '/lib.php');
-
+require_once(__DIR__ . '/libaccess.php');
 global $USER;
 
-if (isloggedin() && !isguestuser() && (user_has_role_assignment($USER->id,3) || user_has_role_assignment($USER->id,4) || is_siteadmin())) {
+if (mwsgroups_require_permission($USER->id)) {
     $token = required_param('token', PARAM_RAW);
     $exclude = optional_param('exclude', '', PARAM_TAGLIST); // usernames to exclude, separated by ","
     $cohorts = optional_param('cohorts', '', PARAM_TAGLIST); // cohorts to restrict to, separated by ","
